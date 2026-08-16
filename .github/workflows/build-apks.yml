@@ -50,7 +50,7 @@ jobs:
           --artifact StockPivotCalc
           --module-name main
           --arch arm64-v8a
-          -o dist
+          -o "$GITHUB_WORKSPACE/dist/StockPivot"
           --yes
 
       - name: Build BatchStock APK (批量版)
@@ -63,13 +63,22 @@ jobs:
           --artifact BatchStock
           --module-name main
           --arch arm64-v8a
-          -o dist
+          -o "$GITHUB_WORKSPACE/dist/BatchStock"
           --yes
+
+      - name: List built APKs
+        run: |
+          echo "=== dist 目录结构 ==="
+          find "$GITHUB_WORKSPACE/dist" -type f | sort
+          echo "=== 全仓库 APK 文件 ==="
+          find "$GITHUB_WORKSPACE" -name "*.apk" -type f | sort
 
       - name: Upload APKs as build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android-apks
-          path: dist/*.apk
+          path: |
+            dist/StockPivot/*.apk
+            dist/BatchStock/*.apk
           if-no-files-found: error
           retention-days: 30
